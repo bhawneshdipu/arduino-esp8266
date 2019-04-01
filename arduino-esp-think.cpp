@@ -80,6 +80,10 @@ void loop()
 void readSensors(void)
 {
   lpg_sensor_status=digitalRead(lpg_gas_sensor);
+  Serial.println("Reading Sensor Data:################START");
+  Serial.println(lpg_sensor_status);
+  Serial.println("Reading Sensor Data:################END");
+
 }
 void writeWebsiteData()
 {
