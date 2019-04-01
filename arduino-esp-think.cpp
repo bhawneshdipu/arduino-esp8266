@@ -164,7 +164,7 @@ int readWebsiteData()
   Serial.print("Sending ...: ");
   Serial.println(messageDown);
 
-  if(messageDown.find("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.find("{ACTION[off]ACTIONEND}")){
+  if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.indexOf("{ACTION[off]ACTIONEND}")){
 	  //off the knob and send the data
 	  Serial.print("Knob Action received .. ...: ");
 	  Serial.print("Taking Action .. ...: ");
@@ -183,7 +183,7 @@ int readWebsiteData()
   Serial.print("Sending ...: ");
   Serial.println(messageDown);
 
-  if(messageDown.find("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.find("{ACTION[off]ACTIONEND}")){
+  if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.indexOf("{ACTION[off]ACTIONEND}")){
 	  //off the knob and send the data
 	  Serial.print("Alarm Action received .. ...: ");
 	  Serial.print("Taking Action .. ...: ");
