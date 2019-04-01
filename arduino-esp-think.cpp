@@ -1,4 +1,4 @@
-// Thingspeak 
+// Thingspeak
 #include <SoftwareSerial.h>
 SoftwareSerial EspSerial(6, 7); // Rx,  Tx
 #include <stdlib.h>
@@ -7,7 +7,6 @@ SoftwareSerial EspSerial(6, 7); // Rx,  Tx
 #define lpg_gas_sensor 10
 #define servomotor 11
 #define alarm 12
-String  server ="api.virtualworld.today";
 
 int lpg_sensor_status;
 int spare;
@@ -38,76 +37,74 @@ void setup()
 }
 void loop()
 {
-  start: //label 
+  start: //label
   error=0;
-  
-  elapsedWriteTime = millis()-startWriteTiming; 
-  elapsedReadTime = millis()-startReadTiming; 
-  if (elapsedReadTime >(readTimingSeconds*1000)) 
+
+  elapsedWriteTime = millis()-startWriteTiming;
+  elapsedReadTime = millis()-startReadTiming;
+  if (elapsedReadTime >(readTimingSeconds*1000))
   {
     ESPcheck();
     int command = readWebsiteData();
     Serial.print(command);
     if(command != 9){
       knob = command;
-    } 
-    delay (1000); 
+    }
+    delay (1000);
     command = readWebsiteData();
     Serial.print(command+"\n");
     if (command != 9){
-      Alarm = command; 
+      Alarm = command;
     }
     takeActions();
-    startReadTiming = millis();   
+    startReadTiming = millis();
   }
-  
-  if (elapsedWriteTime >(writeTimingSeconds*1000)) 
+
+  if (elapsedWriteTime >(writeTimingSeconds*1000))
   {
     ESPcheck();
     readSensors();
     writeWebsiteData();
-    startWriteTiming = millis();   
+    startWriteTiming = millis();
   }
-  
-  if (error==1) //Resend if transmission is not completed 
-  {       
-    Serial.println(" <<<< ERROR >>>>\n"); 
+
+  if (error==1) //Resend if transmission is not completed
+  {
+    Serial.println(" <<<< ERROR >>>>\n");
     digitalWrite(FREEZE_LED, HIGH);
-    delay (2000); 
+    delay (2000);
     goto start; //go to label "start"
   }
 }
 /********* Read Sensors value *************/
 void readSensors(void)
-{ 
+{
   lpg_sensor_status=digitalRead(lpg_gas_sensor);
 }
 void writeWebsiteData()
 {
   startThingSpeakCmd();
   // preparacao da string GET
-  String getStr = "GET /receive.php?name=";
-  getStr += String("arduino-esp8266");
-  getStr += "\r\n\r\n";
+  String getStr = "GET /receive.php?name=arduino-esp8266-1 HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
   sendWebsiteGetCmd(getStr);
 }
 /********* Reset ESP *************/
 void EspHardwareReset(void)
 {
-  Serial.println("Reseting......."); 
-  digitalWrite(HARDWARE_RESET, LOW); 
+  Serial.println("Reseting.......");
+  digitalWrite(HARDWARE_RESET, LOW);
   delay(500);
   digitalWrite(HARDWARE_RESET, HIGH);
   delay(8000);
-  Serial.println("RESET"); 
+  Serial.println("RESET");
 }
 /********* Start communication with ThingSpeak*************/
 void startThingSpeakCmd(void)
 {
   EspSerial.flush();
-  
+
   String cmd = "AT+CIPSTART=\"TCP\",\"";
-  cmd += "http://api.virtualworld.today";
+  cmd += "api.virtualworld.today";
   cmd += "\",80";
   EspSerial.println(cmd);
   Serial.print("Start cmd: ");
@@ -133,10 +130,10 @@ String sendWebsiteGetCmd(String getStr)
     Serial.println(getStr);
     delay(500);
     String messageBody = "";
-    while (EspSerial.available()) 
+    while (EspSerial.available())
     {
       String line = EspSerial.readStringUntil('\n');
-      if (line.length() == 1) 
+      if (line.length() == 1)
       { //actual content starts after empty line (that has length 1)
         messageBody = EspSerial.readStringUntil('\n');
       }
@@ -152,15 +149,14 @@ String sendWebsiteGetCmd(String getStr)
     spare = spare + 1;
     error=1;
     return "error";
-  } 
-} 
+  }
+}
 int readWebsiteData()
 {
   startThingSpeakCmd();
   int command;
   // preparacao da string GET
-  String send_path = "/receive.php?name=arduino-esp8266-1"
-  String getStr= "GET " + send_path + " HTTP/1.1\r\n" + "Host: " + server + "\r\n" + "Connection: keep-alive\r\n\r\n";
+  String getStr = "GET /status.php HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
 
   String messageDown = sendWebsiteGetCmd(getStr);
   Serial.print("Sending ...: ");
@@ -168,7 +164,7 @@ int readWebsiteData()
 
   if (messageDown[5] == 49)
   {
-    command = messageDown[7]-48; 
+    command = messageDown[7]-48;
     Serial.print("Command received: ");
     Serial.println(command);
   }
@@ -191,19 +187,19 @@ void takeActions(void)
 boolean ESPcheck(void)
 {
   EspSerial.println("AT"); // Send "AT+" command to module
-   
-  if (echoFind("OK")) 
+
+  if (echoFind("OK"))
   {
     //Serial.println("ESP ok");
     digitalWrite(FREEZE_LED, LOW);
-    return true; 
+    return true;
   }
   else //Freeze ou Busy
   {
     Serial.println("ESP Freeze *********************************************************************");
     digitalWrite(FREEZE_LED, HIGH);
     EspHardwareReset();
-    return false;  
+    return false;
   }
 }
 boolean echoFind(String keyword)
