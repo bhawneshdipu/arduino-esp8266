@@ -175,9 +175,9 @@ int readWebsiteData()
     Serial.print("Reading Sensor data From Website ...: ");
     Serial.println(messageDown);
 
-  /*
 
-   TAKING ACTION
+
+   //TAKING ACTION
 
   device="knob";
   getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
@@ -199,6 +199,21 @@ int readWebsiteData()
 
 	  Serial.println(messageDown);
   }
+  if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.indexOf("{ACTION[on]ACTIONEND}")){
+  	  //off the knob and send the data
+  	  Serial.print("Knob Action received .. ...: ");
+  	  Serial.print("Taking Action .. ...: ");
+  	  device="knob";
+  	  knob=1;
+  	  getStr = "GET /knob_write.php?status=on HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+  	  messageDown = sendWebsiteGetCmd(getStr);
+
+  	  Serial.print("Taking Taken .. ...: ");
+
+  	  Serial.println(messageDown);
+    }
+
+
 
   device="alarm";
   getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
@@ -219,7 +234,19 @@ int readWebsiteData()
 
 	  Serial.println(messageDown);
   }
-*/
+  if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.indexOf("{ACTION[on]ACTIONEND}")){
+	  //off the knob and send the data
+	  Serial.print("Alarm Action received .. ...: ");
+	  Serial.print("Taking Action .. ...: ");
+	  device="alarm";
+	  Alarm=1;
+	  getStr = "GET /alarm_write.php?status=on HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	  messageDown = sendWebsiteGetCmd(getStr);
+
+	  Serial.print("Taking Taken .. ...: ");
+
+	  Serial.println(messageDown);
+  }
 
   if (messageDown[5] == 49)
   {
