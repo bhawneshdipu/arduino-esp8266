@@ -176,6 +176,7 @@ int readWebsiteData()
 	  Serial.print("Knob Action received .. ...: ");
 	  Serial.print("Taking Action .. ...: ");
 	  device="knob";
+	  knob=1;
 	  getStr = "GET /knob_write.php?status=off HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
 	  messageDown = sendWebsiteGetCmd(getStr);
 
@@ -195,6 +196,7 @@ int readWebsiteData()
 	  Serial.print("Alarm Action received .. ...: ");
 	  Serial.print("Taking Action .. ...: ");
 	  device="alarm";
+	  alarm=1;
 	  getStr = "GET /alarm_write.php?status=off HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
 	  messageDown = sendWebsiteGetCmd(getStr);
 
