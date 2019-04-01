@@ -89,7 +89,11 @@ void writeWebsiteData()
   if(lpg_sensor_status==0){
 	  status="off";
   }
+  Serial.println("Sending Sensor Data.....");
+
   String getStr = "GET /sensor_write.php?status="+status+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+  Serial.println(getStr);
+
   sendWebsiteGetCmd(getStr);
 }
 /********* Reset ESP *************/
