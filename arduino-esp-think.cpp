@@ -167,11 +167,22 @@ int readWebsiteData()
 {
   startThingSpeakCmd();
   int command;
+
   // preparacao da string GET
   String device="knob";
-  String getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+    String getStr = "GET /sensor_read.php HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+    String messageDown = sendWebsiteGetCmd(getStr);
+    Serial.print("Reading Sensor data From Website ...: ");
+    Serial.println(messageDown);
 
-  String messageDown = sendWebsiteGetCmd(getStr);
+  /*
+
+   TAKING ACTION
+
+  device="knob";
+  getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+
+  messageDown = sendWebsiteGetCmd(getStr);
   Serial.print("Sending ...: ");
   Serial.println(messageDown);
 
@@ -208,7 +219,7 @@ int readWebsiteData()
 
 	  Serial.println(messageDown);
   }
-
+*/
 
   if (messageDown[5] == 49)
   {
