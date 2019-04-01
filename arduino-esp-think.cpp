@@ -85,7 +85,8 @@ void writeWebsiteData()
 {
   startThingSpeakCmd();
   // preparacao da string GET
-  String getStr = "GET /receive.php?name=arduino-esp8266-1 HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+  String status="on";
+  String getStr = "GET /sensor_write.php?status="+status+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
   sendWebsiteGetCmd(getStr);
 }
 /********* Reset ESP *************/
@@ -156,11 +157,45 @@ int readWebsiteData()
   startThingSpeakCmd();
   int command;
   // preparacao da string GET
-  String getStr = "GET /status.php HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+  String device="knob"
+  String getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
 
   String messageDown = sendWebsiteGetCmd(getStr);
   Serial.print("Sending ...: ");
   Serial.println(messageDown);
+
+  if(messageDown.find("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.find("{ACTION[off]ACTIONEND}")){
+	  //off the knob and send the data
+	  Serial.print("Knob Action received .. ...: ");
+	  Serial.print("Taking Action .. ...: ");
+	  device="knob"
+	  getStr = "GET /knob_write.php?status=off HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	  messageDown = sendWebsiteGetCmd(getStr);
+
+	  Serial.print("Taking Taken .. ...: ");
+
+	  Serial.println(messageDown);
+  }
+
+  device="alarm"
+  getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+  messageDown = sendWebsiteGetCmd(getStr);
+  Serial.print("Sending ...: ");
+  Serial.println(messageDown);
+
+  if(messageDown.find("{STATUS[NOT TAKEN]STATUSEND}") && messageDown.find("{ACTION[off]ACTIONEND}")){
+	  //off the knob and send the data
+	  Serial.print("Alarm Action received .. ...: ");
+	  Serial.print("Taking Action .. ...: ");
+	  device="alarm"
+	  getStr = "GET /alarm_write.php?status=off HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	  messageDown = sendWebsiteGetCmd(getStr);
+
+	  Serial.print("Taking Taken .. ...: ");
+
+	  Serial.println(messageDown);
+  }
+
 
   if (messageDown[5] == 49)
   {
