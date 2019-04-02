@@ -84,10 +84,15 @@ void readSensors(void)
 void writeWebsiteData()
 {
   startThingSpeakCmd();
+  String status="on";
+  if(lpg_sensor_status==0){
+	  status="off";
+  }
+
   // preparacao da string GET
-  String getStr = "GET /bhawneshdipu/arduino-esp8266/master/status.txt";
-  getStr += "\r\n\r\n";
+  String getStr = "GET /sensor_write.php?status="+status+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
   sendWebsiteGetCmd(getStr);
+
 }
 /********* Reset ESP *************/
 void EspHardwareReset(void)
@@ -105,7 +110,7 @@ void startThingSpeakCmd(void)
   EspSerial.flush();
 
   String cmd = "AT+CIPSTART=\"TCP\",\"";
-  cmd += "https://raw.githubusercontent.com";
+  cmd += "api.virtualworld.today";
   cmd += "\",80";
   EspSerial.println(cmd);
   Serial.print("Start cmd: ");
@@ -156,13 +161,54 @@ int readWebsiteData()
 {
   startThingSpeakCmd();
   int command;
-  // preparacao da string GET
-  String getStr = "GET /bhawneshdipu/arduino-esp8266/master/status.txt";
-  getStr += "\r\n";
 
+  String device="knob";
+  String getStr = "GET /sensor_read.php HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
   String messageDown = sendWebsiteGetCmd(getStr);
-  Serial.print("Sending ...: ");
+  Serial.print("Reading Sensor data From Website ...: ");
   Serial.println(messageDown);
+
+
+	Serial.println("##\n###\nReading...Knob..\n###\n###\n");
+
+
+	device="knob";
+	getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+
+	messageDown = sendWebsiteGetCmd(getStr);
+	Serial.print("Sending ...: ");
+	Serial.print("Receive Action status:..,............ ");
+
+	Serial.println(messageDown);
+//TAKING ACTION
+
+	if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[off]ACTIONEND}")>=0){
+	 	Serial.println("##\nTaking...Action..knob off\n###\n");
+	  Serial.print("Knob Action received .. ...: ");
+	  device="knob";
+	  knob=1;
+	  getStr = "GET /knob_write.php?status=off HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	  messageDown = sendWebsiteGetCmd(getStr);
+
+	  Serial.print("Taking Taken .. ...: ");
+
+	  Serial.println(messageDown);
+}
+
+if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[on]ACTIONEND}")>=0){
+	    //TAKING ACTION
+	   	Serial.println("##\n###\nTaking...Action.. knob on\n###\n###\n");
+	  //off the knob and send the data
+	  Serial.print("Knob Action received .. ...: ");
+	  Serial.print("Taking Action .. ...: ");
+	  device="knob";
+	  knob=1;
+	  getStr = "GET /knob_write.php?status=on HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	  messageDown = sendWebsiteGetCmd(getStr);
+	  Serial.println(messageDown);
+	  Serial.print("Taking Taken .. ...: ");
+
+  }
 
   if (messageDown[5] == 49)
   {
