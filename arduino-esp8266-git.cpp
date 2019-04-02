@@ -173,7 +173,7 @@ int readWebsiteData()
 
 
 	device="knob";
-	getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	getStr = "GET /action_read.php?on="+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
 
 	messageDown = sendWebsiteGetCmd(getStr);
 	Serial.print("Sending ...: ");
@@ -213,7 +213,7 @@ if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf
 
 
 device="alarm";
-getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+getStr = "GET /action_read.php?on="+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
 messageDown = sendWebsiteGetCmd(getStr);
 Serial.print("Sending ...: ");
 Serial.println(messageDown);
