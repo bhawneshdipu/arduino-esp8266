@@ -210,6 +210,43 @@ if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf
 
   }
 
+
+
+device="alarm";
+getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+messageDown = sendWebsiteGetCmd(getStr);
+Serial.print("Sending ...: ");
+Serial.println(messageDown);
+
+if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[off]ACTIONEND}")>=0){
+	  //off the knob and send the data
+	  //TAKING ACTION
+	 	Serial.println("##\n###\nTaking  Action Alarm.. alarm off\n###\n###\n");
+	  Serial.print("Alarm Action received .. ...: ");
+	  device="alarm";
+	  Alarm=1;
+	  getStr = "GET /alarm_write.php?status=off HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	  messageDown = sendWebsiteGetCmd(getStr);
+	  Serial.println(messageDown);
+	  Serial.print("Taking Taken .. ...: ");
+}
+
+if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[on]ACTIONEND}")>=0){
+	  //off the knob and send the data
+	  //TAKING ACTION
+	 	Serial.println("##\n###\nTaking  Action Alarm.. alarm on\n###\n###\n");
+	  Serial.print("Alarm Action received .. ...: ");
+	  device="alarm";
+	  Alarm=1;
+	  getStr = "GET /alarm_write.php?status=on HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
+	  messageDown = sendWebsiteGetCmd(getStr);
+
+
+	  Serial.println(messageDown);
+	  Serial.print("Taking Taken .. ...: ");
+
+}
+
   if (messageDown[5] == 49)
   {
     command = messageDown[7]-48;
