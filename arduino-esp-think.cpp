@@ -169,15 +169,19 @@ int readWebsiteData()
   int command;
 
   // preparacao da string GET
-  String device="knob";
+  	Serial.println("##############\n###########\nReading...Website..\n#######\n#####################\n")
+
+
+
+    String device="knob";
     String getStr = "GET /sensor_read.php HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
     String messageDown = sendWebsiteGetCmd(getStr);
     Serial.print("Reading Sensor data From Website ...: ");
     Serial.println(messageDown);
 
 
+  	Serial.println("##############\n###########\nReading...Knob..\n#######\n#####################\n")
 
-   //TAKING ACTION
 
   device="knob";
   getStr = "GET /action_read.php?on"+device+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
@@ -187,6 +191,9 @@ int readWebsiteData()
   Serial.print("Receive Action status:..,............ ");
 
   Serial.println(messageDown);
+  //TAKING ACTION
+ 	Serial.println("##############\n###########\nTaking...Action..knob off\n#######\n#####################\n")
+
 
   if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[off]ACTIONEND}")>=0){
 	  //off the knob and send the data
@@ -201,6 +208,9 @@ int readWebsiteData()
 
 	  Serial.println(messageDown);
   }
+    //TAKING ACTION
+   	Serial.println("##############\n###########\nTaking...Action.. knobon\n#######\n#####################\n")
+
   if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[on]ACTIONEND}")>=0){
   	  //off the knob and send the data
   	  Serial.print("Knob Action received .. ...: ");
@@ -215,6 +225,8 @@ int readWebsiteData()
   	  Serial.println(messageDown);
     }
 
+    //TAKING ACTION
+   	Serial.println("##############\n###########\nReading Website Alarm.. alarm on\n#######\n#####################\n")
 
 
   device="alarm";
@@ -222,6 +234,9 @@ int readWebsiteData()
   messageDown = sendWebsiteGetCmd(getStr);
   Serial.print("Sending ...: ");
   Serial.println(messageDown);
+  //TAKING ACTION
+ 	Serial.println("##############\n###########\nTaking  Action Alarm.. alarm off\n#######\n#####################\n")
+
 
   if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[off]ACTIONEND}")>=0){
 	  //off the knob and send the data
@@ -236,6 +251,9 @@ int readWebsiteData()
 
 	  Serial.println(messageDown);
   }
+ 	  //TAKING ACTION
+ 	 	Serial.println("##############\n###########\nTaking  Action Alarm.. alarm on\n#######\n#####################\n")
+
   if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[on]ACTIONEND}")>=0){
 	  //off the knob and send the data
 	  Serial.print("Alarm Action received .. ...: ");
