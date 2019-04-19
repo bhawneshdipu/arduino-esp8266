@@ -216,13 +216,24 @@ int readWebsiteData(String device_name)
     Serial.print(device_name+"Action received .. ...: ");
     return 0;
   }
+  if(device_name=="knob"  && messageDown.indexOf("{KNOB NOT TAKEN ON}")>=0){
+    Serial.println("##\nTaking...Action.."+device_name+" on\n###\n");
+    Serial.print(device_name+"Action received .. ...: ");
+    return 1;
+  }
+
   if(device_name=="alarm" && messageDown.indexOf("{ALARM NOT TAKEN OFF}")>=0){
     Serial.println("##\nTaking...Action.."+device_name+" off\n###\n");
     Serial.print(device_name+"Action received .. ...: ");
     return 0;
   }
+  if(device_name=="alarm" && messageDown.indexOf("{ALARM NOT TAKEN ON}")>=0){
+    Serial.println("##\nTaking...Action.."+device_name+" on\n###\n");
+    Serial.print(device_name+"Action received .. ...: ");
+    return 0;
+  }
   
-  return 1;
+  return 9;
 }
 
 //function to perform actions on regulator or alarm
