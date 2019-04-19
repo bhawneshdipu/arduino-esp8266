@@ -230,7 +230,14 @@ int readWebsiteData(String device_name)
   if(device_name=="alarm" && messageDown.indexOf("{ALARM NOT TAKEN ON}")>=0){
     Serial.println("##\nTaking...Action.."+device_name+" on\n###\n");
     Serial.print(device_name+"Action received .. ...: ");
-    return 0;
+    return 1;
+  }
+  if(device_name=="knob"){
+    return knob; 
+  }
+  
+  if(device_name=="alarm"){
+    return Alarm; 
   }
   
   return 9;
