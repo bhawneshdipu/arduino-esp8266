@@ -66,8 +66,27 @@ void loop()
     ESPcheck();
     int command = readWebsiteData("knob");
     Serial.print(command);
+    Serial.print(command+"\n");
+    // taking actions after reading data from the website table action_status
+
+
+    takeActions();
+
+   // writes the data on the website table knob and alarm status after executing the particular actions
+
+    writeWebsiteData("knob_write",knob);
+    command=0;
+    delay (1000);
     command = readWebsiteData("alarm");
     Serial.print(command+"\n");
+    if (command != 9){
+      Alarm = command;
+    }
+    takeActions();
+    writeWebsiteData("alarm_write",Alarm);  
+    command=0;
+    startReadTiming = millis();
+
    
 }
 
@@ -80,6 +99,7 @@ void readSensors(void)
   Serial.println(lpg_sensor_status);
   Serial.println("Reading Sensor Data:##END");
 }
+
 
 // function to write data on the website
 
@@ -191,14 +211,14 @@ int readWebsiteData(String device_name)
   String getStr = "GET /action_read.php?on"+device_name+" HTTP/1.1\r\nHost: api.virtualworld.today\r\nConnection: keep-alive\r\n\r\n";
   String messageDown = sendWebsiteGetCmd(getStr);
   Serial.print("Sending ...: ");
-  Serial.print("Receive Action status:..,............ ");
+  Serial.print("reading :"+device_name);
   Serial.println(messageDown);
-  if(device=="knob"  && messageDown.indexOf("{KNOB NOT TAKEN OFF}")>=0){
+  if(device_name=="knob"  && messageDown.indexOf("{KNOB NOT TAKEN OFF}")>=0){
     Serial.println("##\nTaking...Action.."+device_name+" off\n###\n");
     Serial.print(device_name+"Action received .. ...: ");
     return 0;
   }
-  if(device=="alarm" && messageDown.indexOf("{ALARM NOT TAKEN OFF}")>=0){
+  if(device_name=="alarm" && messageDown.indexOf("{ALARM NOT TAKEN OFF}")>=0){
     Serial.println("##\nTaking...Action.."+device_name+" off\n###\n");
     Serial.print(device_name+"Action received .. ...: ");
     return 0;
