@@ -180,12 +180,29 @@ String sendWebsiteGetCmd(String getStr)
         messageBody += EspSerial.readStringUntil('\n');
         messageBody+="\n";
       }else{
-        messageBody+=line;
+        messageBody += EspSerial.readStringUntil('\n');
         messageBody+="\n";
+      }
     }
+    delay(1000);
+    while (EspSerial.available())
+    {
+      String line = EspSerial.readStringUntil('\n');
+      messageBody+=line;
+      messageBody+="\n";
+      if (line.length() == 1)
+      { 
+        messageBody += EspSerial.readStringUntil('\n');
+        messageBody+="\n";
+      }else{
+        messageBody += EspSerial.readStringUntil('\n');
+        messageBody+="\n";
+      }
     }
-    Serial.print("MessageBody received: ");
+    Serial.print("MessageBody received: ==============>START");
     Serial.println(messageBody);
+    Serial.print("MessageBody received: ==============>END");
+
     return messageBody;
   }
   else
