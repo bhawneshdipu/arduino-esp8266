@@ -174,12 +174,15 @@ String sendWebsiteGetCmd(String getStr)
     {
       String line = EspSerial.readStringUntil('\n');
       messageBody+=line;
+      messageBody+="\n";
       if (line.length() == 1)
       { 
         messageBody += EspSerial.readStringUntil('\n');
+        messageBody+="\n";
       }else{
         messageBody+=line;
-      }
+        messageBody+="\n";
+    }
     }
     Serial.print("MessageBody received: ");
     Serial.println(messageBody);
@@ -205,7 +208,12 @@ int readWebsiteData(String device_name)
   Serial.print("Sending ...: ");
   Serial.print("Receive Action status:..,............ ");
   Serial.println(messageDown);
-  if(messageDown.indexOf("{STATUS[NOT TAKEN]STATUSEND}")>=0 && messageDown.indexOf("{ACTION[off]ACTIONEND}")>=0){
+  if(device=="knob"  && messageDown.indexOf("{KNOB NOT TAKEN OFF}")>=0){
+    Serial.println("##\nTaking...Action.."+device_name+" off\n###\n");
+    Serial.print(device_name+"Action received .. ...: ");
+    return 0;
+  }
+  if(device=="alarm" && messageDown.indexOf("{ALARM NOT TAKEN OFF}")>=0){
     Serial.println("##\nTaking...Action.."+device_name+" off\n###\n");
     Serial.print(device_name+"Action received .. ...: ");
     return 0;
